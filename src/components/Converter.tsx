@@ -9,13 +9,11 @@ import { selectBaseCurrency, setBaseCurrency } from "../redux/baseCurrencySlice"
 import { Loader } from "./Loader";
 import useDebounce from "../hooks/useDebounce";
 
+
 export const Converter: React.FC = () => {
   const baseCurrency = useAppSelector(selectBaseCurrency);
   const dispatch = useDispatch();
-
   const { data, error, isFetching } = useGetRatesQuery(baseCurrency);
-  const rates = data && Object.entries(data.rates);
-  const currenciesNames = data && Object.keys(data.rates);
 
   const [result, setResult] = useState("");
   const [inputValue, setInputValue] = useState("");
@@ -46,12 +44,11 @@ export const Converter: React.FC = () => {
   }
 
   useEffect(() => {
-    if (error) {
-      setResult(errorMsg);
+    if (isFetching){
+      return;
     }
-  }, [error]);
-
-  useEffect(() => {
+    const rates = data && Object.entries(data.data);
+    const currenciesNames = data && Object.keys(data.data);
     const inputWords = debouncedInput
       .trim()
       .split(" ")
@@ -77,11 +74,11 @@ export const Converter: React.FC = () => {
     if (isValidInput && rates) {
       rates.forEach((rate) => {
         if (rate[0] === from.toUpperCase()) {
-          fromRate = rate[1];
+          fromRate = Number(rate[1]);
         }
 
         if (rate[0] === to.toUpperCase()) {
-          toRate = rate[1];
+          toRate = Number(rate[1]);
         }
       });
 
@@ -91,7 +88,7 @@ export const Converter: React.FC = () => {
         ? ((+amount * toRate) / fromRate)
         : convertAmount;
 
-      setResult(`${amount} ${from} is equal to ${convertAmount.toFixed(3)} ${to}`);
+      setResult(`${amount} ${from} = ${convertAmount.toFixed(3)} ${to}`);
       setIsCalculated(true);
 
       localStorage.setItem("baseCurrency", from);
@@ -130,4 +127,3 @@ export const Converter: React.FC = () => {
     </>
   );
 };
-

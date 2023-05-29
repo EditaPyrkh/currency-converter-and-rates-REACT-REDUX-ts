@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -8,20 +8,22 @@ import { useGetRatesQuery } from "../redux/ApiCurrencies";
 import { useAppSelector } from "../redux/hooks";
 import { Loader } from "./Loader";
 
+
 export const Selector: React.FC = () => {
+  
+  const baseCurrency = useAppSelector(selectBaseCurrency);
   const dispatch = useDispatch();
-  const baseCurrency = localStorage.getItem("baseCurrency") || useAppSelector(selectBaseCurrency);
-
-  const { data, isFetching } = useGetRatesQuery(baseCurrency);
-  const currenciesNames = data && Object.keys(data.rates);
-
   const [selectedValue, setSelectedValue] = useState(baseCurrency);
+  const { data, isFetching } = useGetRatesQuery(baseCurrency);
+  const rates = data && Object.entries(data.data);
+  const currenciesNames = data && Object.keys(data.data);
 
   const handleSelectChange = (event: SelectChangeEvent) => {
-    setSelectedValue(event.target.value);
-    dispatch(setBaseCurrency(event.target.value));
-  };
+      setSelectedValue(event.target.value);
+      dispatch(setBaseCurrency(event.target.value));
+    };
 
+    
   return (
     <>
       {isFetching && <Loader />}
@@ -31,16 +33,17 @@ export const Selector: React.FC = () => {
           onChange={handleSelectChange}
           inputProps={{ "aria-label": "Without label" }}
         >
-          {currenciesNames?.map((currency) => (
+          {currenciesNames?.map((rates) => (
             <MenuItem
-              value={currency}
-              key={currency}
+              value={rates}
+              key={rates}
             >
-              {currency}
+              {rates}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
     </>
-  );
+  )  
+
 };

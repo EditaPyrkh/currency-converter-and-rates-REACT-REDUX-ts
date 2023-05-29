@@ -6,6 +6,7 @@ type Result = {
 }
 
 interface Response {
+  data : any
   rates(rates: any): unknown
   eventData: Record<Result['rates'], any>
   onCategoriesChange: (rates: string[]) => void
@@ -22,7 +23,7 @@ export const ApiCurrencies = createApi({
   endpoints: (builder) => ({
     getRates: builder.query<Response, string>({
       query: (baseCurrency) => ({
-        url: `latest?apikey=${'nG5wtHAazHz24iF8ENyMbUTLJGKoIRxCnluafODY'}&base=${baseCurrency}&currencies=${currenciesList}`
+        url: `latest?apikey=${'nG5wtHAazHz24iF8ENyMbUTLJGKoIRxCnluafODY'}&base=${baseCurrency}&currencies=${currenciesList}`,
         method: 'GET',
         redirect: 'follow',
         // eslint-disable-next-line quote-props

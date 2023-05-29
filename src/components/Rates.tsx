@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React from "react";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
@@ -14,8 +15,7 @@ import { Loader } from "./Loader";
 export const Rates = () => {
   const baseCurrency = useAppSelector(selectBaseCurrency);
   const { data, isFetching } = useGetRatesQuery(baseCurrency);
-  const rates = data && Object.entries(data.rates);
-
+  const rates = data && Object.entries(data.data);
   return (
     <>
       {isFetching && <Loader />}
@@ -39,7 +39,7 @@ export const Rates = () => {
                       {rate[0]}
                     </TableCell>
                     <TableCell component="th" scope="row" align="right">
-                      {rate[1].toFixed(4)}
+                      {rate[1]}
                     </TableCell>
                   </TableRow>
                 );
