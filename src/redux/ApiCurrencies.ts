@@ -1,36 +1,36 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 type Result = {
-  base: string,
-  date: string,
-  rates: {
-    [key: string]: number,
-  }
-};
+  base: string
+  rates: string | number
+}
 
-type Response = Pick<Result, "rates">;
+interface Response {
+  rates(rates: any): unknown
+  eventData: Record<Result['rates'], any>
+  onCategoriesChange: (rates: string[]) => void
+}
 
-const { REACT_APP_API_KEY, REACT_APP_API_URL } = process.env;
-const currenciesList = "EUR,USD,AUD,CAD,JPY,CZK";
+const currenciesList = 'EUR,USD,AUD,CAD,JPY,CZK'
 
 export const ApiCurrencies = createApi({
-  reducerPath: "ApiCurrencies",
+  reducerPath: 'ApiCurrencies',
   baseQuery: fetchBaseQuery({
-    baseUrl: REACT_APP_API_URL,
+    baseUrl: 'https://api.freecurrencyapi.com/v1/',
   }),
-  tagTypes: ["Currencies"],
+  tagTypes: ['Currencies'],
   endpoints: (builder) => ({
     getRates: builder.query<Response, string>({
       query: (baseCurrency) => ({
-        url: `latest?apikey=${REACT_APP_API_KEY}&base=${baseCurrency}&symbols=${currenciesList}`,
-        method: "GET",
-        redirect: "follow",
+        url: `latest?apikey=${'nG5wtHAazHz24iF8ENyMbUTLJGKoIRxCnluafODY'}&base=${baseCurrency}&currencies=${currenciesList}`
+        method: 'GET',
+        redirect: 'follow',
         // eslint-disable-next-line quote-props
-        headers: { "apikey": REACT_APP_API_KEY },
+        headers: { apikey: 'nG5wtHAazHz24iF8ENyMbUTLJGKoIRxCnluafODY' },
       }),
-      providesTags: ["Currencies"],
+      providesTags: ['Currencies'],
     }),
   }),
-});
+})
 
-export const { useGetRatesQuery } = ApiCurrencies;
+export const { useGetRatesQuery } = ApiCurrencies
